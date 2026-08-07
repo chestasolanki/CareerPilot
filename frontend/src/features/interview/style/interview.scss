@@ -150,6 +150,36 @@
         }
 
         .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+
+            .download-pdf-btn {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                background: linear-gradient(135deg, #ff2a70 0%, #d946ef 100%);
+                color: #ffffff;
+                font-size: 0.82rem;
+                font-weight: 700;
+                padding: 0.5rem 1rem;
+                border-radius: 8px;
+                border: none;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                box-shadow: 0 4px 14px rgba(255, 42, 112, 0.35);
+
+                &:hover {
+                    transform: translateY(-1px);
+                    box-shadow: 0 6px 18px rgba(255, 42, 112, 0.5);
+                }
+
+                &:disabled {
+                    opacity: 0.6;
+                    cursor: not-allowed;
+                }
+            }
+
             .match-score-badge {
                 display: flex;
                 align-items: center;
@@ -172,6 +202,7 @@
             }
         }
     }
+
 
     /* 3-Column Main Dashboard Grid */
     .interview-layout {

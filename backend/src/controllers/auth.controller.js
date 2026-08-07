@@ -2,6 +2,9 @@ const userModel=require('../models/user.model')
 const bcrypt=require('bcrypt')
 const jwt=require('jsonwebtoken');
 const tokenBlackListModel = require('../models/blacklist.model');
+
+const JWT_SECRET = process.env.JWT_SECRET_KEY || process.env.JWT_SECRET || 'careerpilot_jwt_secret_key_2026_super_secret';
+
 /**
  * @name registerUserController
  * @description Register a new user,excepts username, email and password in the req
@@ -38,7 +41,7 @@ async function registerUserController(req,res){
             password:hash
         })
 
-        const token=jwt.sign({id:user._id,username:user.username},process.env.JWT_SECRET_KEY,
+        const token=jwt.sign({id:user._id,username:user.username}, JWT_SECRET,
             {expiresIn:'1d'}
         )
         res.cookie("token",token)
@@ -89,7 +92,7 @@ async function loginUserController(req,res){
 
         const token=jwt.sign(
             {id:user._id,username:user.username},
-            process.env.JWT_SECRET_KEY,
+            JWT_SECRET,
             {expiresIn:'1d'}
         )
 

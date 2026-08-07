@@ -167,23 +167,39 @@ You MUST follow this exact JSON structure:
 }
 
 async function generateResumePdf({ resume, selfDescription, jobDescription }) {
-  const prompt = `Generate HTML content of resume for a candidate based on the following details:
-Resume: ${resume || "Not provided"}
-Self Description: ${selfDescription || "Not provided"}
-Job Description: ${jobDescription || "Not provided"}
+  const prompt = `You are an elite executive resume writer and career strategist.
+Generate an A4-sized, highly tailored professional HTML resume for a candidate aiming to land this specific job:
 
-The response must be a JSON object with a single field "html" containing the full HTML content of the resume suitable for conversion to PDF using Puppeteer.`;
+### Target Job Description:
+${jobDescription || "Not provided"}
+
+### Candidate Background & Experience:
+Resume Details: ${resume || "Not provided"}
+Self Description: ${selfDescription || "Not provided"}
+
+### Critical Instructions:
+1. DO NOT simply copy the candidate's original resume text.
+2. TAILOR and REWRITE the entire resume content specifically to match the keywords, required skills, tools, and key responsibilities outlined in the Target Job Description.
+3. Frame work experience bullet points using strong action verbs and quantified achievements aligned with the Job Description's requirements.
+4. Structure the resume with clear sections: Header (Name, Contact, Target Job Title), Professional Summary, Core Competencies & Technical Skills, Professional Experience, Key Projects, and Education.
+5. Provide COMPLETE, self-contained HTML (with embedded CSS in a <style> tag) designed for A4 single-page printing. Use modern typography (font-family: 'Inter', sans-serif), sleek dark header accents (#1e293b / #0f172a), high contrast text, proper line height, and zero outer margin overflow so it prints cleanly to PDF via Puppeteer.
+
+Respond strictly with a JSON object containing a single field "html":
+{
+  "html": "<!DOCTYPE html><html>...</html>"
+}`;
 
   const completion = await groq.chat.completions.create({
     model: "llama-3.3-70b-versatile",
     messages: [
       {
         role: "system",
-        content: "You are an expert resume builder. You strictly output valid JSON with an 'html' string property.",
+        content: "You are an expert AI resume writer. You tailor candidate profiles to match target job descriptions and output clean valid JSON containing a single 'html' field with full single-page A4 HTML resume markup.",
       },
       { role: "user", content: prompt },
     ],
     response_format: { type: "json_object" },
+    temperature: 0.4,
   });
 
   const raw = completion.choices[0].message.content;

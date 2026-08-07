@@ -2,17 +2,25 @@ import React, { useState, useRef, useEffect } from 'react'
 import "../style/home.scss"
 import { useNavigate } from 'react-router'
 import { useInterview } from '../hook/useInterview'
+import PilotLogo from '../../../components/PilotLogo'
 
 const Home = () => {
   const { loading, generateReport, reports, getAllReports, getReportById } = useInterview()
   const [jobDescription, setJobDescription] = useState("")
   const [selfDescription, setSelfDescription] = useState("")
+  const [selectedFile, setSelectedFile] = useState(null)
   const resumeInputRef = useRef()
   const navigate = useNavigate()
 
   useEffect(() => {
     getAllReports()
   }, [])
+
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0])
+    }
+  }
 
   const handleGenerateReport = async () => {
     const resumeFile = resumeInputRef.current?.files?.[0]
@@ -31,14 +39,7 @@ const Home = () => {
     <main className='home'>
       {/* App Logo */}
       <nav className="main-nav">
-        <div className="logo-container">
-          <div className="logo-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-            </svg>
-          </div>
-          <span className="logo-text">Career<span className="highlight">Pilot</span></span>
-        </div>
+        <PilotLogo size={42} />
       </nav>
 
       {/* Header */}
@@ -93,7 +94,7 @@ const Home = () => {
                 Upload Resume <span className="badge-tag">(Best Results)</span>
               </div>
 
-              <label className="dropzone-box" htmlFor="resume">
+              <label className={`dropzone-box ${selectedFile ? 'has-file' : ''}`} htmlFor="resume">
                 <div className="cloud-icon-circle">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -101,15 +102,25 @@ const Home = () => {
                     <line x1="12" y1="3" x2="12" y2="15"></line>
                   </svg>
                 </div>
-                <p className="dropzone-title">Click to upload or drag & drop</p>
-                <p className="dropzone-subtitle">PDF or DOCX (Max 5MB)</p>
+                {selectedFile ? (
+                  <div className="selected-file-info">
+                    <p className="dropzone-title text-success">✓ {selectedFile.name}</p>
+                    <p className="dropzone-subtitle">{(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • Click to replace file</p>
+                  </div>
+                ) : (
+                  <>
+                    <p className="dropzone-title">Click to upload or drag & drop</p>
+                    <p className="dropzone-subtitle">PDF or DOCX (Max 5MB)</p>
+                  </>
+                )}
                 <input 
-                ref={resumeInputRef}
+                  ref={resumeInputRef}
                   type='file' 
                   name='resume' 
                   id='resume' 
                   accept='.pdf,.doc,.docx'
                   style={{ display: 'none' }}
+                  onChange={handleFileChange}
                 />
               </label>
             </div>
