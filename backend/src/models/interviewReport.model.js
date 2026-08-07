@@ -1,36 +1,98 @@
 const mongoose=require('mongoose')
 
-/**
- * -job description schema: String
- * -resume text: String
- * -self description: String
- * -Match Score: Number
- * 
- * Technical Questions: [{
- *          question:"",
- *          intention:"",
- *          answer:""
- *       }]
- * Behavioural Question:  [{
- *          question:"",
- *          intention:"",
- *          answer:""
- *       }]
- * Skill Gaps: [{
- *       skill:"",
- *      severity:{
- *          type:string,
- *          enum:["low","high","medium"]        
- *       }
- *        
- * }]
- * Prepration plan[{
- *        day: Number,
- *        focus:String,
- *         tasks:[String]
- * }]
- */
+
+const technicalQuestionSchema=mongoose.Schema({
+    question:{
+        type:String,
+        required:[true,'Technical ques is required']
+    },
+    intention:{
+        type:String,
+        required:[true,'Intention s is required']
+    },
+    answer:{
+        type:String,
+        required:[true,'Answer is required']
+    },
+},{
+    _id:false
+})
+
+const behavioralQuestionSchema=mongoose.Schema({
+    question:{
+        type:String,
+        required:[true,'Technical ques is required']
+    },
+    intention:{
+        type:String,
+        required:[true,'Intention s is required']
+    },
+    answer:{
+        type:String,
+        required:[true,'Answer is required']
+    },
+},{
+    _id:false
+})
+
+const skillGapsSchema=mongoose.Schema({
+    skill:{
+        type:String,
+        required:[true,"skill is required"]
+    },
+    severity:{
+        type:String,
+        enum:["low","medium","high"],
+        required:[true,"severity is required"]
+    }
+},{
+    _id:false
+})
+
+const preprationPlanSchema=mongoose.Schema({
+    day:{
+        type:Number,
+        required:[true,"Day is required"]
+    },
+    focus:{
+        type:String,
+        required:[true,"focus is required"]
+    },
+    tasks:[{
+        type:String
+    }]
+},{
+    _id:false
+})
 
 const interviewReportSchema=new mongoose.Schema({
-    
+    jobDescription: {
+        type:String,
+        required: [true,"Job description is required"]
+    },
+    resume:{
+        type:String
+    },
+    selfDescription:{
+        type:String
+    },
+    matchScore:{
+        type:Number,
+        min:0,
+        max:100
+    },
+    technicalQuestions:[technicalQuestionSchema],
+    behavioralQuestions:[behavioralQuestionSchema],
+    skillGaps:[skillGapsSchema],
+    preprationPlan:[preprationPlanSchema],
+    user:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"user"
+    }
+},{
+    timestamps:true
 })
+
+const interviewReportModel=mongoose.model("InterviewReport",interviewReportSchema)
+
+module.exports=interviewReportModel;
