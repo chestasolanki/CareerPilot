@@ -12,12 +12,12 @@ export const useAuth = () => {
             const data = await login({ email, password });
             if (data && data.user) {
                 setUser(data.user);
-                return true;
+                return { success: true };
             }
-            return false;
+            return { success: false, error: "Invalid credentials or missing user data" };
         } catch (err) {
             console.error("Login error:", err);
-            return false;
+            return { success: false, error: err.message || "Login failed" };
         } finally {
             setLoading(false);
         }
@@ -29,12 +29,12 @@ export const useAuth = () => {
             const data = await register({ username, email, password });
             if (data && data.user) {
                 setUser(data.user);
-                return true;
+                return { success: true };
             }
-            return false;
+            return { success: false, error: "Registration failed" };
         } catch (err) {
             console.error("Register error:", err);
-            return false;
+            return { success: false, error: err.message || "Registration failed" };
         } finally {
             setLoading(false);
         }
@@ -45,10 +45,10 @@ export const useAuth = () => {
         try {
             await logout();
             setUser(null);
-            return true;
+            return { success: true };
         } catch (err) {
             console.error("Logout error:", err);
-            return false;
+            return { success: false, error: err.message || "Logout failed" };
         } finally {
             setLoading(false);
         }

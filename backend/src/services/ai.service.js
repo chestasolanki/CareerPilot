@@ -52,6 +52,7 @@ const interviewReportSchema = z.object({
     .describe(
       "A day-wise preparation roadmap tailored to the candidate's current skills, job description, and identified skill gaps."
     ),
+    title:z.string().describe("The title of the job for which the interview report is generated")
 });
 
 async function generateInterviewReport({ resume, selfDescription, jobDescription }) {
@@ -91,7 +92,10 @@ You MUST follow this exact JSON structure:
       "focus": "Topic focus for the day",
       "tasks": ["Task 1", "Task 2"]
     }
-  ]
+  ],
+  "title":[{
+        
+  }]
 }`;
 
   const completion = await groq.chat.completions.create({

@@ -16,14 +16,14 @@ const Login = () => {
     const [password, setPassword] = useState("")
 
     const handleSubmit = async (e) => {
-    e.preventDefault();
-    const success = await handleLogin({ email, password });
-    if (success) {
-        navigate('/'); // Only navigate if login succeeded!
-    } else {
-        alert("Login failed! Please check your email and password.");
-    }
-};
+        e.preventDefault();
+        const res = await handleLogin({ email, password });
+        if (res.success) {
+            navigate('/');
+        } else {
+            alert(res.error || "Login failed! Please check your credentials.");
+        }
+    };
 
     if(loading){
         return (<main><h1>Loading....</h1></main>)

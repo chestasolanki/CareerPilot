@@ -13,11 +13,11 @@ const Register = () => {
     
     const handleSubmit = async (e) => {
         e.preventDefault()
-        const success = await handleRegister({ username, email, password })
-        if (success) {
+        const res = await handleRegister({ username, email, password })
+        if (res.success) {
             navigate('/')
         } else {
-            alert("Registration failed! Please check your details.")
+            alert(res.error || "Registration failed! Please check your details.")
         }
     }
     if(loading){

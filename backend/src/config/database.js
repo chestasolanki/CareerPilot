@@ -1,9 +1,12 @@
 const mongoose=require('mongoose')
 
 async function connectDB(){
-    await mongoose.connect(process.env.MONGO_URI)
-
-    console.log('database connected')
+    try {
+        await mongoose.connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 2000 })
+        console.log('database connected successfully')
+    } catch (err) {
+        console.error('Database connection notice:', err.message)
+    }
 }
 
 module.exports=connectDB
