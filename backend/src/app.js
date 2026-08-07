@@ -5,16 +5,22 @@ const app=express()
 
 app.use(express.json())
 app.use(cookieParser())
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "https://career-pilot-liart-nine.vercel.app"
+];
+
 app.use(cors({
-    origin: (origin, callback) => {
-        if (!origin || /^http:\/\/localhost:\d+$/.test(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    credentials: true
-}))
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
 
 const authRouter=require('./routes/auth.routes')
 const interviewRouter=require('./routes/interview.routes')
