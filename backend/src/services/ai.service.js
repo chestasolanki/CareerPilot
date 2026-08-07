@@ -1,7 +1,7 @@
 const { OpenAI } = require("openai");
 const { z } = require("zod");
 const { zodToJsonSchema } = require("zod-to-json-schema");
-
+const puppeteer=require("puppeteer")
 const groq = new OpenAI({
   apiKey: process.env.GROQ_API_KEY,
   baseURL: "https://api.groq.com/openai/v1",
@@ -93,9 +93,7 @@ You MUST follow this exact JSON structure:
       "tasks": ["Task 1", "Task 2"]
     }
   ],
-  "title":[{
-        
-  }]
+  "title": "Software Engineer"
 }`;
 
   const completion = await groq.chat.completions.create({
@@ -168,4 +166,28 @@ You MUST follow this exact JSON structure:
   return result.data;
 }
 
-module.exports = generateInterviewReport;
+async function generateResumePdf({ resume, selfDescription, jobDescription }) {
+  const prompt = `Generate HTML content of resume for a candidate based on the following details:
+Resume: ${resume || "Not provided"}
+Self Description: ${selfDescription || "Not provided"}
+Job Description: ${jobDescription || "Not provided"}
+
+The response must be a JSON object with a single field "html" containing the full HTML content of the resume suitable for conversion to PDF using Puppeteer.`;
+
+  const completion = await groq.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
+    messages: [
+      {
+        role: "system",
+        content: "You are an expert resume builder. You strictly output valid JSON with an 'html' string property.",
+      },
+      { role: "user", content: prompt },
+    ],
+    response_format: { type: "json_object" },
+  });
+
+  const raw = completion.choices[0].message.content;
+  return JSON.parse(raw);
+}
+
+module.exports = { generateInterviewReport, generateResumePdf };

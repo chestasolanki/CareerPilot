@@ -1,84 +1,46 @@
-import React, { useRef, useState } from 'react'
-import { useNavigate } from 'react-router'
-import axios from 'axios'
+import React, { useState, useRef, useEffect } from 'react'
 import "../style/home.scss"
+import { useNavigate } from 'react-router'
+import { useInterview } from '../hook/useInterview'
 
 const Home = () => {
+  const { loading, generateReport, reports, getAllReports, getReportById } = useInterview()
+  const [jobDescription, setJobDescription] = useState("")
+  const [selfDescription, setSelfDescription] = useState("")
+  const resumeInputRef = useRef()
   const navigate = useNavigate()
-  const fileInputRef = useRef(null)
-  const [selectedFile, setSelectedFile] = useState(null)
-  const [jobDescription, setJobDescription] = useState('')
-  const [selfDescription, setSelfDescription] = useState('')
-  const [isDragging, setIsDragging] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
 
-  const handleFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0])
+  useEffect(() => {
+    getAllReports()
+  }, [])
+
+  const handleGenerateReport = async () => {
+    const resumeFile = resumeInputRef.current?.files?.[0]
+    const data = await generateReport({ jobDescription, selfDescription, resumeFile })
+    if (data?._id) {
+      navigate(`/interview/${data._id}`)
     }
   }
 
-  const handleDragOver = (e) => {
-    e.preventDefault()
-    setIsDragging(true)
-  }
-
-  const handleDragLeave = () => {
-    setIsDragging(false)
-  }
-
-  const handleDrop = (e) => {
-    e.preventDefault()
-    setIsDragging(false)
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setSelectedFile(e.dataTransfer.files[0])
-    }
-  }
-
-  const handleGenerateStrategy = async () => {
-    setError(null)
-    if (!jobDescription.trim()) {
-      setError('Target Job Description is required.')
-      return
-    }
-
-    if (!selectedFile && !selfDescription.trim()) {
-      setError('Please upload a Resume or enter a Self Description.')
-      return
-    }
-
-    try {
-      setLoading(true)
-      const formData = new FormData()
-      formData.append('jobDescription', jobDescription)
-      formData.append('selfDescription', selfDescription)
-      if (selectedFile) {
-        formData.append('resume', selectedFile)
-      }
-
-      const response = await axios.post('/api/interview', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
-        withCredentials: true
-      })
-
-      if (response.data?.interviewReport) {
-        navigate('/interview', {
-          state: { interviewReport: response.data.interviewReport }
-        })
-      }
-    } catch (err) {
-      console.error(err)
-      setError(err.response?.data?.message || 'Failed to generate interview report. Please try again.')
-    } finally {
-      setLoading(false)
-    }
+  const handleSelectReport = async (id) => {
+    await getReportById(id)
+    navigate(`/interview/${id}`)
   }
 
   return (
     <main className='home'>
+      {/* App Logo */}
+      <nav className="main-nav">
+        <div className="logo-container">
+          <div className="logo-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <span className="logo-text">Career<span className="highlight">Pilot</span></span>
+        </div>
+      </nav>
+
       {/* Header */}
       <header className="home-header">
         <h1>Create Your Custom <span className="highlight">Interview Plan</span></h1>
@@ -103,13 +65,13 @@ const Home = () => {
 
             <div className="textarea-container">
               <textarea 
+              onChange={(e)=>{
+                setJobDescription(e.target.value)
+              }}
                 name="jobDescription" 
                 id="jobDescription"
-                value={jobDescription}
-                onChange={(e) => setJobDescription(e.target.value.slice(0, 5000))}
                 placeholder="Paste the full job description here...&#10;e.g. 'Senior Frontend Engineer at Google requires proficiency in React, TypeScript, and large-scale system design...'"
               ></textarea>
-              <div className="char-count">{jobDescription.length} / 5000 chars</div>
             </div>
           </div>
 
@@ -131,13 +93,7 @@ const Home = () => {
                 Upload Resume <span className="badge-tag">(Best Results)</span>
               </div>
 
-              <label 
-                className={`dropzone-box ${isDragging ? 'dragging' : ''} ${selectedFile ? 'has-file' : ''}`}
-                htmlFor="resume"
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-              >
+              <label className="dropzone-box" htmlFor="resume">
                 <div className="cloud-icon-circle">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -145,25 +101,15 @@ const Home = () => {
                     <line x1="12" y1="3" x2="12" y2="15"></line>
                   </svg>
                 </div>
-                {selectedFile ? (
-                  <div className="file-info">
-                    <p className="dropzone-title text-success">✓ File attached</p>
-                    <p className="dropzone-filename">{selectedFile.name}</p>
-                    <p className="dropzone-subtitle">Click or drop another file to replace</p>
-                  </div>
-                ) : (
-                  <>
-                    <p className="dropzone-title">Click to upload or drag & drop</p>
-                    <p className="dropzone-subtitle">PDF or DOCX (Max 5MB)</p>
-                  </>
-                )}
+                <p className="dropzone-title">Click to upload or drag & drop</p>
+                <p className="dropzone-subtitle">PDF or DOCX (Max 5MB)</p>
                 <input 
+                ref={resumeInputRef}
                   type='file' 
                   name='resume' 
                   id='resume' 
                   accept='.pdf,.doc,.docx'
                   style={{ display: 'none' }}
-                  onChange={handleFileChange}
                 />
               </label>
             </div>
@@ -172,10 +118,11 @@ const Home = () => {
             <div className="self-desc-section">
               <h3>Quick Self-Description</h3>
               <textarea 
+              onChange={(e)=>{
+                setSelfDescription(e.target.value)
+              }}
                 name="selfDescription" 
                 id="selfDescription"
-                value={selfDescription}
-                onChange={(e) => setSelfDescription(e.target.value)}
                 placeholder="Briefly describe your experience, key skills, and years of experience if you don't have a resume handy..."
               ></textarea>
             </div>
@@ -192,20 +139,10 @@ const Home = () => {
           </div>
         </div>
 
-        {error && (
-          <div style={{ color: '#ef4444', padding: '0 1.75rem', fontSize: '0.85rem' }}>
-            {error}
-          </div>
-        )}
-
         {/* Card Footer */}
         <div className="card-footer">
           <span className="footer-info">AI-Powered Strategy Generation • Approx 30s</span>
-          <button 
-            className="generate-btn"
-            onClick={handleGenerateStrategy}
-            disabled={loading}
-          >
+          <button onClick={handleGenerateReport} className="generate-btn" disabled={loading}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"></path>
             </svg>
@@ -214,15 +151,34 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Footer Navigation */}
-      <footer className="page-footer">
-        <a href="#privacy">Privacy Policy</a>
-        <a href="#terms">Terms of Service</a>
-        <a href="#help">Help Center</a>
+      {/* Recent Reports Footer */}
+      <footer className="page-footer recent-reports-footer">
+        <div className="recent-reports-container">
+          <h3>Recent Reports</h3>
+          {reports && reports.length > 0 ? (
+            <div className="recent-reports-grid">
+              {reports.map((item) => (
+                <div 
+                  key={item._id} 
+                  className="recent-report-card"
+                  onClick={() => handleSelectReport(item._id)}
+                >
+                  <div className="report-card-header">
+                    <span className="report-title">{item.title || 'Interview Strategy'}</span>
+                  </div>
+                  <div className="report-card-date">
+                    {item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'Recent'}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="no-reports-msg">No recent reports found. Generate your first strategy above!</p>
+          )}
+        </div>
       </footer>
     </main>
   )
 }
 
 export default Home
-

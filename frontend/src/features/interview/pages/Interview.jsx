@@ -1,60 +1,16 @@
 import React, { useState } from 'react'
-import { useLocation, useNavigate } from 'react-router'
+import { useNavigate } from 'react-router'
+import { useInterview } from '../hook/useInterview'
 import '../style/interview.scss'
-
-// 1 High Quality Sample Data Instance (matching backend Mongoose schema)
-const sampleInterviewReport = {
-  title: "Senior Full-Stack Engineer",
-  matchScore: 84,
-  jobDescription: "Senior Full-Stack Engineer specializing in Node.js, React, Redis, and Distributed Systems.",
-  technicalQuestions: [
-    {
-      question: "How does the Node.js Event Loop handle asynchronous I/O operations under heavy concurrent traffic?",
-      intention: "Evaluate core understanding of non-blocking I/O, libuv thread pool mechanics, and event loop phase execution.",
-      answer: "Node.js delegates non-blocking I/O tasks to libuv. When operations complete, callbacks are queued into libuv's poll phase and processed on the main execution thread without blocking incoming HTTP requests."
-    }
-  ],
-  behavioralQuestions: [
-    {
-      question: "Describe a situation where you had to debug a high-severity production outage under tight deadlines.",
-      intention: "Assess crisis management, systematic log diagnosis, and ability to communicate root-cause mitigations.",
-      answer: "When database connection starvation degraded API response times, I analyzed query metrics, isolated missing index bottlenecks, scaled connection pool bounds, and restored service in under 15 minutes."
-    }
-  ],
-  skillGaps: [
-    { skill: "redis", severity: "high" },
-    { skill: "Message queue", severity: "medium" },
-    { skill: "Event loop", severity: "low" }
-  ],
-  preprationPlan: [
-    {
-      day: 1,
-      focus: "Node.js Event Loop & Microtask Queues",
-      tasks: [
-        "Review libuv thread pool architecture and poll phase execution.",
-        "Practice solving promise microtask vs timer callback ordering questions."
-      ]
-    },
-    {
-      day: 2,
-      focus: "Redis Caching Strategies & Distributed Locks",
-      tasks: [
-        "Implement Cache-Aside and Write-Through caching patterns.",
-        "Master Redis key TTL evictions and Redlock distributed locks."
-      ]
-    }
-  ]
-}
 
 const Interview = () => {
   const navigate = useNavigate()
-  const location = useLocation()
+  const { report, loading } = useInterview()
   
-  // Use real backend report if available, fallback to sample report
-  const interviewReport = location.state?.interviewReport || sampleInterviewReport
+  const interviewReport = report
 
   const [activeTab, setActiveTab] = useState('technical')
-  const [expandedQuestion, setExpandedQuestion] = useState(0) // Default expand first question
+  const [expandedQuestion, setExpandedQuestion] = useState(0)
   const [selectedSkillFilter, setSelectedSkillFilter] = useState(null)
 
   const jobTitle = interviewReport?.title
@@ -76,17 +32,80 @@ const Interview = () => {
       )
     : technicalQuestions
 
+  if (loading) {
+    return (
+      <main className="interview-page empty-state">
+        <header className="interview-navbar">
+          <div className="nav-left">
+            <button className="back-btn" onClick={() => navigate('/')}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+              </svg>
+              Back to Planner
+            </button>
+            <div className="title-wrapper">
+              <h1>Interview Preparation Report</h1>
+            </div>
+          </div>
+        </header>
+
+        <div className="empty-content-box">
+          <h2>Analyzing Profile & Generating Report...</h2>
+          <p>Our AI is processing your job description and resume to create your custom strategy.</p>
+        </div>
+      </main>
+    )
+  }
+
+  if (!interviewReport) {
+    return (
+      <main className="interview-page empty-state">
+        <header className="interview-navbar">
+          <div className="nav-left">
+            <button className="back-btn" onClick={() => navigate('/')}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+              </svg>
+              Back to Planner
+            </button>
+            <div className="title-wrapper">
+              <h1>Interview Preparation Report</h1>
+            </div>
+          </div>
+        </header>
+
+        <div className="empty-content-box">
+          <h2>No Report Loaded</h2>
+          <p>Please submit your target job description and profile on the Home page to view your interview report.</p>
+          <button className="generate-now-btn" onClick={() => navigate('/')}>
+            Go to Home
+          </button>
+        </div>
+      </main>
+    )
+  }
+
   return (
     <main className="interview-page">
       {/* Top Navbar */}
       <header className="interview-navbar">
         <div className="nav-left">
+          <div className="logo-container" onClick={() => navigate('/')} style={{ cursor: 'pointer', marginBottom: 0 }}>
+            <div className="logo-icon sm">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+              </svg>
+            </div>
+            <span className="logo-text sm">Career<span className="highlight">Pilot</span></span>
+          </div>
+
           <button className="back-btn" onClick={() => navigate('/')}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
             Back to Planner
           </button>
+
           <div className="title-wrapper">
             <h1>Interview Preparation Report</h1>
             {jobTitle && (
@@ -170,7 +189,7 @@ const Interview = () => {
 
               <div className="questions-list">
                 {filteredTechQuestions.length === 0 ? (
-                  <p className="no-items-text">No technical questions matching filter "{selectedSkillFilter}".</p>
+                  <p className="no-items-text">No technical questions available.</p>
                 ) : (
                   filteredTechQuestions.map((q, idx) => (
                     <div 

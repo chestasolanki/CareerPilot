@@ -5,6 +5,7 @@ const upload=require("../middlewares/file.middleware")
 const interviewRouter=express.Router()
 
 
+
 /**
  * @route POST /api/interview/
  * @escriotion generate new interview report on the basis of user self description resume pdf and job description
@@ -26,5 +27,11 @@ interviewRouter.get("/report/:interviewId",authMiddleware.authUser,interviewCont
  */
 interviewRouter.get("/",authMiddleware.authUser,interviewController.getAllTheInterviewReportController)
 
+/**
+ * @route GET /api/interview/resume/pdf
+ * @escriotion generate resume PDF
+ * @access private
+ */
+interviewRouter.get("/resume/pdf/:intervieId ",authMiddleware.authUser,interviewController.generateResumePdfController)
 
 module.exports=interviewRouter

@@ -21,3 +21,49 @@ html, body, #root {
     -webkit-text-fill-color: transparent;
 }
 
+.main-nav {
+    width: 100%;
+    max-width: 1020px;
+    margin: 0 auto 1.5rem auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+
+    .logo-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #ff2a70 0%, #d946ef 100%);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 14px rgba(255, 42, 112, 0.4);
+
+        &.sm {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(255, 42, 112, 0.3);
+        }
+    }
+
+    .logo-text {
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: #ffffff;
+        letter-spacing: -0.02em;
+
+        &.sm {
+            font-size: 1.1rem;
+        }
+    }
+}
+
+
