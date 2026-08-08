@@ -5,6 +5,13 @@ const tokenBlackListModel = require('../models/blacklist.model');
 
 const JWT_SECRET = process.env.JWT_SECRET_KEY || process.env.JWT_SECRET || 'careerpilot_jwt_secret_key_2026_super_secret';
 
+// Shared cookie options so set/clear always match (required for cross-site cookies to work)
+const COOKIE_OPTIONS = {
+    httpOnly: true,
+    secure: true,      // required when sameSite is "none" (must be served over HTTPS)
+    sameSite: "none",  // required for cross-site (frontend/backend on different domains)
+};
+
 /**
  * @name registerUserController
  * @description Register a new user,excepts username, email and password in the req
@@ -44,7 +51,11 @@ async function registerUserController(req,res){
         const token=jwt.sign({id:user._id,username:user.username}, JWT_SECRET,
             {expiresIn:'1d'}
         )
-        res.cookie("token",token)
+
+        res.cookie("token", token, {
+            ...COOKIE_OPTIONS,
+            maxAge: 24 * 60 * 60 * 1000 // 1 day, matches JWT expiry
+        })
 
         res.status(201).json({
             message:"user registered",
@@ -96,7 +107,10 @@ async function loginUserController(req,res){
             {expiresIn:'1d'}
         )
 
-        res.cookie("token",token)
+        res.cookie("token", token, {
+            ...COOKIE_OPTIONS,
+            maxAge: 24 * 60 * 60 * 1000
+        })
 
         res.status(200).json({
             message:"user loggedIn successfully",
@@ -125,7 +139,10 @@ async function logoutUserController(req,res){
         if(token){
             await tokenBlackListModel.create({token})
         }
-        res.clearCookie("token")
+
+        // Must pass the same options used when setting the cookie,
+        // otherwise some browsers (Chrome) won't actually clear it.
+        res.clearCookie("token", COOKIE_OPTIONS)
 
         res.status(200).json({
             message:"user logged out successful"

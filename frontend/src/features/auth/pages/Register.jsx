@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import "../auth.form.scss"
 import { useNavigate,Link } from 'react-router'
 import { useAuth } from '../hooks/useAuth';
 
@@ -24,7 +25,7 @@ const Register = () => {
         return (<main><h1>Loading....</h1></main>)
     }
   return (
-    <main>
+    <main className='auth-page'>
         <div className='form-container'>
             <h1>Register</h1>
             <form onSubmit={handleSubmit}>
@@ -32,17 +33,20 @@ const Register = () => {
                 
                 <label htmlFor='username'>Username: </label>
                 <input 
+                id='username'
                 onChange={(e)=>{setUsername(e.target.value)}}
                 type='text' placeholder='Enter username'/>
 
 
                 <label htmlFor='email'>Email: </label>
                 <input 
+                id='email'
                 onChange={(e)=>{setEmail(e.target.value)}}
                 type='email' placeholder='Enter email address'/>
                 
                 <label htmlFor='password'>Password: </label> 
                 <input
+                id='password'
                 onChange={(e)=>{setPassword(e.target.value)}}
                  type='password' placeholder='Enter password'/>
                 </div>

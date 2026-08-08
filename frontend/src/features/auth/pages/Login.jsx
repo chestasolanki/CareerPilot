@@ -29,7 +29,7 @@ const Login = () => {
         return (<main><h1>Loading....</h1></main>)
     }
   return (
-    <main>
+    <main className='auth-page'>
         <div className='form-container'>
             <h1>Login</h1>
             <form onSubmit={handleSubmit}>
@@ -37,6 +37,7 @@ const Login = () => {
 
                 <label htmlFor='email'>Email: </label>
                 <input 
+                id='email'
                 onChange={(e)=>{
                     setEmail(e.target.value)
                 }}
@@ -44,6 +45,7 @@ const Login = () => {
                 
                 <label htmlFor='password'>Password: </label> 
                 <input
+                id='password'
                 onChange={(e)=>{
                     setPassword(e.target.value)
                 }}
