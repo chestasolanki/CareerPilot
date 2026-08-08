@@ -13,10 +13,6 @@ const allowedOrigins = [
   "https://careerrpilot.vercel.app"
 ];
 
-// Vercel preview deployments get random hashed subdomains like
-// careerrpilot-<hash>-chestasolanki664-7278s-projects.vercel.app
-// This regex allows any preview URL belonging to this specific Vercel project,
-// so you don't have to update allowedOrigins every time you get a new preview URL.
 const vercelPreviewPattern = /^https:\/\/careerrpilot-[a-z0-9]+-chestasolanki664-7278s-projects\.vercel\.app$/;
 
 app.use(cors({
