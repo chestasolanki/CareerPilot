@@ -449,6 +449,97 @@
                         color: #ff4d88;
                     }
                 }
+
+                .mock-answer-panel {
+                    margin-top: 1.2rem;
+                    padding-top: 1rem;
+                    border-top: 1px solid #232a3b;
+
+                    h4 {
+                        font-size: 0.78rem;
+                        font-weight: 700;
+                        text-transform: uppercase;
+                        color: #94a3b8;
+                        margin-bottom: 0.65rem;
+                        letter-spacing: 0.04em;
+                    }
+
+                    textarea {
+                        width: 100%;
+                        min-height: 110px;
+                        resize: vertical;
+                        background: #10131b;
+                        border: 1px solid #283042;
+                        border-radius: 10px;
+                        color: #e2e8f0;
+                        font-size: 0.88rem;
+                        line-height: 1.5;
+                        padding: 0.85rem;
+                        outline: none;
+
+                        &:focus {
+                            border-color: #ff2a70;
+                            box-shadow: 0 0 0 3px rgba(255, 42, 112, 0.12);
+                        }
+                    }
+
+                    .evaluate-answer-btn {
+                        margin-top: 0.75rem;
+                        background: #f8fafc;
+                        border: none;
+                        border-radius: 8px;
+                        color: #111827;
+                        cursor: pointer;
+                        font-size: 0.82rem;
+                        font-weight: 800;
+                        padding: 0.55rem 0.9rem;
+
+                        &:disabled {
+                            cursor: not-allowed;
+                            opacity: 0.65;
+                        }
+                    }
+
+                    .evaluation-result {
+                        margin-top: 1rem;
+                        background: #10131b;
+                        border: 1px solid #283042;
+                        border-radius: 10px;
+                        padding: 1rem;
+                        color: #cbd5e1;
+                        font-size: 0.85rem;
+                        line-height: 1.55;
+
+                        .evaluation-score {
+                            display: inline-flex;
+                            align-items: center;
+                            margin-bottom: 0.8rem;
+                            background: rgba(16, 185, 129, 0.14);
+                            border: 1px solid rgba(16, 185, 129, 0.28);
+                            border-radius: 999px;
+                            color: #34d399;
+                            font-weight: 800;
+                            padding: 0.25rem 0.7rem;
+                        }
+
+                        strong {
+                            display: block;
+                            color: #f8fafc;
+                            font-size: 0.78rem;
+                            margin-top: 0.55rem;
+                            text-transform: uppercase;
+                        }
+
+                        ul {
+                            margin: 0.35rem 0 0.5rem 1.1rem;
+                            padding: 0;
+                        }
+
+                        p {
+                            margin-top: 0.75rem;
+                        }
+                    }
+                }
             }
         }
 

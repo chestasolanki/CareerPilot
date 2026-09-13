@@ -1,15 +1,17 @@
-import React, { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import "../style/home.scss"
 import { useNavigate } from 'react-router'
 import { useInterview } from '../hook/useInterview'
 import PilotLogo from '../../../components/PilotLogo'
 
 const Home = () => {
-  const { loading, generateReport, reports, getAllReports, getReportById } = useInterview()
+  const { loading, generateReport, reports, getAllReports, getReportById, deleteReport } = useInterview()
   const [jobDescription, setJobDescription] = useState("")
   const [selfDescription, setSelfDescription] = useState("")
   const [selectedFile, setSelectedFile] = useState(null)
+  const [selectedJobDescriptionFile, setSelectedJobDescriptionFile] = useState(null)
   const resumeInputRef = useRef()
+  const jobDescriptionInputRef = useRef()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -22,17 +24,44 @@ const Home = () => {
     }
   }
 
+  const handleJobDescriptionFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedJobDescriptionFile(e.target.files[0])
+    }
+  }
+
   const handleGenerateReport = async () => {
-    const resumeFile = resumeInputRef.current?.files?.[0]
-    const data = await generateReport({ jobDescription, selfDescription, resumeFile })
-    if (data?._id) {
-      navigate(`/interview/${data._id}`)
+    try {
+      const resumeFile = resumeInputRef.current?.files?.[0]
+      const jobDescriptionFile = jobDescriptionInputRef.current?.files?.[0]
+      const data = await generateReport({ jobDescription, selfDescription, resumeFile, jobDescriptionFile })
+      if (data?._id) {
+        navigate(`/interview/${data._id}`)
+      }
+    } catch (err) {
+      console.error("Generate report error:", err)
+      alert(err.message || "Failed to generate report. Please log in and try again.")
     }
   }
 
   const handleSelectReport = async (id) => {
     await getReportById(id)
     navigate(`/interview/${id}`)
+  }
+
+  const handleDeleteReport = async (e, id) => {
+    e.stopPropagation()
+    const shouldDelete = window.confirm("Delete this report permanently?")
+
+    if (!shouldDelete) {
+      return
+    }
+
+    try {
+      await deleteReport(id)
+    } catch (err) {
+      alert(err.response?.data?.message || err.message || "Failed to delete report.")
+    }
   }
 
   return (
@@ -74,6 +103,40 @@ const Home = () => {
                 placeholder="Paste the full job description here...&#10;e.g. 'Senior Frontend Engineer at Google requires proficiency in React, TypeScript, and large-scale system design...'"
               ></textarea>
             </div>
+
+            <div className="or-divider">
+              <span>OR UPLOAD JD PDF</span>
+            </div>
+
+            <label className={`dropzone-box compact ${selectedJobDescriptionFile ? 'has-file' : ''}`} htmlFor="jobDescriptionFile">
+              <div className="cloud-icon-circle">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+              </div>
+              {selectedJobDescriptionFile ? (
+                <div className="selected-file-info">
+                  <p className="dropzone-title text-success">✓ {selectedJobDescriptionFile.name}</p>
+                  <p className="dropzone-subtitle">{(selectedJobDescriptionFile.size / (1024 * 1024)).toFixed(2)} MB • Click to replace file</p>
+                </div>
+              ) : (
+                <>
+                  <p className="dropzone-title">Upload job description PDF</p>
+                  <p className="dropzone-subtitle">PDF only (Max 3MB)</p>
+                </>
+              )}
+              <input 
+                ref={jobDescriptionInputRef}
+                type='file' 
+                name='jobDescriptionFile' 
+                id='jobDescriptionFile' 
+                accept='.pdf,application/pdf'
+                style={{ display: 'none' }}
+                onChange={handleJobDescriptionFileChange}
+              />
+            </label>
           </div>
 
           {/* Right Column: Your Profile */}
@@ -176,6 +239,20 @@ const Home = () => {
                 >
                   <div className="report-card-header">
                     <span className="report-title">{item.title || 'Interview Strategy'}</span>
+                    <button
+                      className="delete-report-btn"
+                      type="button"
+                      aria-label={`Delete ${item.title || 'Interview Strategy'}`}
+                      onClick={(e) => handleDeleteReport(e, item._id)}
+                    >
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M3 6h18"></path>
+                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                        <path d="M10 11v6"></path>
+                        <path d="M14 11v6"></path>
+                      </svg>
+                    </button>
                   </div>
                   <div className="report-card-date">
                     {item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'Recent'}

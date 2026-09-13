@@ -1,15 +1,16 @@
-const mongoose=require('mongoose')
+const mongoose = require('mongoose');
 
-async function connectDB(){
+async function connectDB() {
     try {
-        // 2000ms was too tight for a cold connection from some hosts/regions
-        // to MongoDB Atlas, causing intermittent connection failures right
-        // after deploy or cold start. Bumped to a safer default.
-        await mongoose.connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 10000 })
-        console.log('database connected successfully')
+        await mongoose.connect(process.env.MONGO_URI, {
+            serverSelectionTimeoutMS: 10000
+        });
+
+        console.log('✅ Database connected successfully');
     } catch (err) {
-        console.error('Database connection notice:', err.message)
+        console.error('❌ Database connection failed:');
+        console.error(err);
     }
 }
 
-module.exports=connectDB
+module.exports = connectDB;

@@ -1,4 +1,4 @@
-import { getAllInterview, generateInterviewReport, generateInterviewReportById, downloadResumePdf } from "../services/interview.api"
+import { getAllInterview, generateInterviewReport, generateInterviewReportById, deleteInterview, downloadResumePdf, evaluateMockAnswer } from "../services/interview.api"
 import { useContext } from "react"
 import { InterviewContext } from "../Interview.context"
 
@@ -11,14 +11,15 @@ export const useInterview = () => {
 
     const { loading, setLoading, report, setReport, reports, setReports } = context
 
-    const generateReport = async ({ jobDescription, selfDescription, resumeFile }) => {
+    const generateReport = async ({ jobDescription, selfDescription, resumeFile, jobDescriptionFile }) => {
         setLoading(true)
         try {
-            const response = await generateInterviewReport({ jobDescription, selfDescription, resumeFile })
+            const response = await generateInterviewReport({ jobDescription, selfDescription, resumeFile, jobDescriptionFile })
             setReport(response.interviewReport)
             return response.interviewReport
         } catch (err) {
             console.log(err)
+            throw err
         } finally {
             setLoading(false)
         }
@@ -32,6 +33,7 @@ export const useInterview = () => {
             return response.interviewReport
         } catch (err) {
             console.log(err)
+            throw err
         } finally {
             setLoading(false)
         }
@@ -68,5 +70,29 @@ export const useInterview = () => {
         }
     }
 
-    return { loading, report, reports, generateReport, getReportById, getAllReports, downloadPdf }
+    const deleteReport = async (interviewId) => {
+        try {
+            await deleteInterview(interviewId)
+            setReports(prevReports => prevReports.filter(item => item._id !== interviewId))
+            if (report?._id === interviewId) {
+                setReport(null)
+            }
+        } catch (err) {
+            console.error("Error deleting report:", err)
+            throw err
+        }
+    }
+
+    const evaluateAnswer = async ({ interviewReportId, question, answer, questionType }) => {
+        try {
+            const response = await evaluateMockAnswer({ interviewReportId, question, answer, questionType })
+            setReport(response.interviewReport)
+            return response.evaluation
+        } catch (err) {
+            console.error("Error evaluating answer:", err)
+            throw err
+        }
+    }
+
+    return { loading, report, reports, generateReport, getReportById, getAllReports, deleteReport, downloadPdf, evaluateAnswer }
 }

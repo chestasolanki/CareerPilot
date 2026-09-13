@@ -61,6 +61,70 @@
             flex-direction: column;
         }
 
+        .dropzone-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.75rem 1rem;
+            background: #171b26;
+            border: 2px dashed #283042;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+
+            &:hover, &.dragging {
+                border-color: #ff2a70;
+                background: rgba(255, 42, 112, 0.04);
+            }
+
+            &.has-file {
+                border-color: #10b981;
+                background: rgba(16, 185, 129, 0.04);
+            }
+
+            &.compact {
+                padding: 1rem;
+            }
+
+            .cloud-icon-circle {
+                width: 44px;
+                height: 44px;
+                border-radius: 50%;
+                background: rgba(255, 42, 112, 0.15);
+                color: #ff2a70;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 0.75rem;
+            }
+
+            .dropzone-title {
+                font-size: 0.9rem;
+                font-weight: 600;
+                color: #f1f5f9;
+                margin-bottom: 0.25rem;
+
+                &.text-success {
+                    color: #10b981;
+                }
+            }
+
+            .dropzone-filename {
+                font-size: 0.85rem;
+                font-weight: 600;
+                color: #38bdf8;
+                margin: 0.2rem 0;
+                word-break: break-all;
+            }
+
+            .dropzone-subtitle {
+                font-size: 0.78rem;
+                color: #64748b;
+            }
+        }
+
         .column-title {
             display: flex;
             align-items: center;
@@ -153,66 +217,6 @@
                     color: #ff4d88;
                     font-size: 0.75rem;
                     font-weight: 500;
-                }
-            }
-
-            .dropzone-box {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                padding: 1.75rem 1rem;
-                background: #171b26;
-                border: 2px dashed #283042;
-                border-radius: 12px;
-                cursor: pointer;
-                transition: all 0.2s ease;
-                text-align: center;
-
-                &:hover, &.dragging {
-                    border-color: #ff2a70;
-                    background: rgba(255, 42, 112, 0.04);
-                }
-
-                &.has-file {
-                    border-color: #10b981;
-                    background: rgba(16, 185, 129, 0.04);
-                }
-
-                .cloud-icon-circle {
-                    width: 44px;
-                    height: 44px;
-                    border-radius: 50%;
-                    background: rgba(255, 42, 112, 0.15);
-                    color: #ff2a70;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    margin-bottom: 0.75rem;
-                }
-
-                .dropzone-title {
-                    font-size: 0.9rem;
-                    font-weight: 600;
-                    color: #f1f5f9;
-                    margin-bottom: 0.25rem;
-
-                    &.text-success {
-                        color: #10b981;
-                    }
-                }
-
-                .dropzone-filename {
-                    font-size: 0.85rem;
-                    font-weight: 600;
-                    color: #38bdf8;
-                    margin: 0.2rem 0;
-                    word-break: break-all;
-                }
-
-                .dropzone-subtitle {
-                    font-size: 0.78rem;
-                    color: #64748b;
                 }
             }
         }
@@ -407,6 +411,7 @@
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
+                    gap: 0.75rem;
 
                     .report-title {
                         font-size: 0.9rem;
@@ -416,6 +421,27 @@
                         overflow: hidden;
                         text-overflow: ellipsis;
                         max-width: 220px;
+                    }
+
+                    .delete-report-btn {
+                        width: 30px;
+                        height: 30px;
+                        flex: 0 0 30px;
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        background: rgba(239, 68, 68, 0.08);
+                        border: 1px solid rgba(239, 68, 68, 0.22);
+                        border-radius: 8px;
+                        color: #f87171;
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+
+                        &:hover {
+                            background: rgba(239, 68, 68, 0.18);
+                            border-color: rgba(239, 68, 68, 0.45);
+                            color: #fecaca;
+                        }
                     }
                 }
 
@@ -433,4 +459,3 @@
         }
     }
 }
-

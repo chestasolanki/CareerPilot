@@ -65,6 +65,38 @@ const preprationPlanSchema=mongoose.Schema({
     _id:false
 })
 
+const evaluationSchema=mongoose.Schema({
+    question:{
+        type:String,
+        required:[true,"Question is required"]
+    },
+    answer:{
+        type:String,
+        required:[true,"Answer is required"]
+    },
+    questionType:{
+        type:String,
+        enum:["technical","behavioral"],
+        default:"technical"
+    },
+    score:{
+        type:Number,
+        min:0,
+        max:100
+    },
+    strengths:[{
+        type:String
+    }],
+    weakAreas:[{
+        type:String
+    }],
+    suggestedAnswer:{
+        type:String
+    }
+},{
+    timestamps:true
+})
+
 const interviewReportSchema=new mongoose.Schema({
     jobDescription: {
         type:String,
@@ -92,7 +124,11 @@ const interviewReportSchema=new mongoose.Schema({
     title:{
         type:String,
         required:[true,"Job title is required"]
-    }
+    },
+    agentInsights:{
+        type:mongoose.Schema.Types.Mixed
+    },
+    evaluations:[evaluationSchema]
 },{
     timestamps:true
 })

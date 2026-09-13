@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { useInterview } from '../hook/useInterview'
 import PilotLogo from '../../../components/PilotLogo'
@@ -7,7 +7,7 @@ import '../style/interview.scss'
 const Interview = () => {
   const navigate = useNavigate()
   const { interviewId } = useParams()
-  const { report, loading, getReportById, downloadPdf } = useInterview()
+  const { report, loading, getReportById, downloadPdf, evaluateAnswer } = useInterview()
 
   useEffect(() => {
     if (interviewId && (!report || report._id !== interviewId)) {
@@ -20,6 +20,9 @@ const Interview = () => {
   const [activeTab, setActiveTab] = useState('technical')
   const [expandedQuestion, setExpandedQuestion] = useState(0)
   const [selectedSkillFilter, setSelectedSkillFilter] = useState(null)
+  const [mockAnswers, setMockAnswers] = useState({})
+  const [evaluationResults, setEvaluationResults] = useState({})
+  const [evaluatingKey, setEvaluatingKey] = useState(null)
 
   const jobTitle = interviewReport?.title
   const technicalQuestions = interviewReport?.technicalQuestions || []
@@ -30,6 +33,33 @@ const Interview = () => {
 
   const toggleQuestion = (index) => {
     setExpandedQuestion(expandedQuestion === index ? null : index)
+  }
+
+  const handleMockAnswerChange = (key, value) => {
+    setMockAnswers(prev => ({ ...prev, [key]: value }))
+  }
+
+  const handleEvaluateAnswer = async ({ key, question, questionType }) => {
+    const answer = mockAnswers[key]
+    if (!answer || !answer.trim()) {
+      alert("Please write a mock answer first.")
+      return
+    }
+
+    try {
+      setEvaluatingKey(key)
+      const evaluation = await evaluateAnswer({
+        interviewReportId: interviewReport._id,
+        question,
+        answer,
+        questionType
+      })
+      setEvaluationResults(prev => ({ ...prev, [key]: evaluation }))
+    } catch (err) {
+      alert(err.response?.data?.message || err.message || "Failed to evaluate answer.")
+    } finally {
+      setEvaluatingKey(null)
+    }
   }
 
   // Filter technical questions when a skill gap pill is clicked
@@ -229,6 +259,49 @@ const Interview = () => {
                             <h4>Suggested Answer</h4>
                             <p>{q.answer}</p>
                           </div>
+
+                          <div className="mock-answer-panel">
+                            <h4>Practice Your Answer</h4>
+                            <textarea
+                              value={mockAnswers[`technical-${idx}`] || ""}
+                              onChange={(e) => handleMockAnswerChange(`technical-${idx}`, e.target.value)}
+                              placeholder="Type your answer here and let the Evaluation Agent score it..."
+                            />
+                            <button
+                              className="evaluate-answer-btn"
+                              onClick={() => handleEvaluateAnswer({
+                                key: `technical-${idx}`,
+                                question: q.question,
+                                questionType: "technical"
+                              })}
+                              disabled={loading || evaluatingKey === `technical-${idx}`}
+                            >
+                              {evaluatingKey === `technical-${idx}` ? "Evaluating..." : "Evaluate Answer"}
+                            </button>
+
+                            {evaluationResults[`technical-${idx}`] && (
+                              <div className="evaluation-result">
+                                <div className="evaluation-score">Score: {evaluationResults[`technical-${idx}`].score}%</div>
+                                <div>
+                                  <strong>Strengths</strong>
+                                  <ul>
+                                    {evaluationResults[`technical-${idx}`].strengths?.map((item, itemIdx) => (
+                                      <li key={itemIdx}>{item}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                                <div>
+                                  <strong>Weak Areas</strong>
+                                  <ul>
+                                    {evaluationResults[`technical-${idx}`].weakAreas?.map((item, itemIdx) => (
+                                      <li key={itemIdx}>{item}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                                <p>{evaluationResults[`technical-${idx}`].suggestedAnswer}</p>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       )}
                     </div>
@@ -262,6 +335,49 @@ const Interview = () => {
                         <div className="answer-section">
                           <h4>Sample Answer</h4>
                           <p>{q.answer}</p>
+                        </div>
+
+                        <div className="mock-answer-panel">
+                          <h4>Practice Your Answer</h4>
+                          <textarea
+                            value={mockAnswers[`behavioral-${idx}`] || ""}
+                            onChange={(e) => handleMockAnswerChange(`behavioral-${idx}`, e.target.value)}
+                            placeholder="Type your STAR-style answer here and let the Evaluation Agent score it..."
+                          />
+                          <button
+                            className="evaluate-answer-btn"
+                            onClick={() => handleEvaluateAnswer({
+                              key: `behavioral-${idx}`,
+                              question: q.question,
+                              questionType: "behavioral"
+                            })}
+                            disabled={loading || evaluatingKey === `behavioral-${idx}`}
+                          >
+                            {evaluatingKey === `behavioral-${idx}` ? "Evaluating..." : "Evaluate Answer"}
+                          </button>
+
+                          {evaluationResults[`behavioral-${idx}`] && (
+                            <div className="evaluation-result">
+                              <div className="evaluation-score">Score: {evaluationResults[`behavioral-${idx}`].score}%</div>
+                              <div>
+                                <strong>Strengths</strong>
+                                <ul>
+                                  {evaluationResults[`behavioral-${idx}`].strengths?.map((item, itemIdx) => (
+                                    <li key={itemIdx}>{item}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                              <div>
+                                <strong>Weak Areas</strong>
+                                <ul>
+                                  {evaluationResults[`behavioral-${idx}`].weakAreas?.map((item, itemIdx) => (
+                                    <li key={itemIdx}>{item}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                              <p>{evaluationResults[`behavioral-${idx}`].suggestedAnswer}</p>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>

@@ -5,11 +5,12 @@ const api = axios.create({
     withCredentials: true
 })
 
-export const generateInterviewReport = async ({ jobDescription, selfDescription, resumeFile }) => {
+export const generateInterviewReport = async ({ jobDescription, selfDescription, resumeFile, jobDescriptionFile }) => {
     const formData = new FormData()
     if (jobDescription) formData.append("jobDescription", jobDescription)
     if (selfDescription) formData.append("selfDescription", selfDescription)
     if (resumeFile) formData.append("resume", resumeFile)
+    if (jobDescriptionFile) formData.append("jobDescriptionFile", jobDescriptionFile)
 
     const response = await api.post("/api/interview/", formData, {
         headers: {
@@ -30,9 +31,23 @@ export const getAllInterview = async () => {
     return response.data
 }
 
+export const deleteInterview = async (interviewId) => {
+    const response = await api.delete(`/api/interview/report/${interviewId}`)
+    return response.data
+}
+
 export const downloadResumePdf = async (interviewReportId) => {
     const response = await api.get(`/api/interview/resume/pdf/${interviewReportId}`, {
         responseType: 'blob'
+    })
+    return response.data
+}
+
+export const evaluateMockAnswer = async ({ interviewReportId, question, answer, questionType }) => {
+    const response = await api.post(`/api/interview/${interviewReportId}/evaluate`, {
+        question,
+        answer,
+        questionType
     })
     return response.data
 }
