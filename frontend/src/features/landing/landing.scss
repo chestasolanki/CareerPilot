@@ -159,15 +159,18 @@ html {
     .editorial-hero-section {
         width: 100%;
         max-width: 1340px;
-        padding: 5.5rem 2.5rem 1.5rem 2.5rem;
+        min-height: calc(100vh - 100px);
+        padding: 3rem 2.5rem 2rem 2.5rem;
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: center;
         text-align: center;
         position: relative;
 
         @media (max-width: 868px) {
-            padding: 3.5rem 1.25rem 1rem 1.25rem;
+            min-height: auto;
+            padding: 3.5rem 1.25rem 2.5rem 1.25rem;
         }
 
         .hero-top-tag {
@@ -188,7 +191,7 @@ html {
             letter-spacing: 0.02em;
             line-height: 1.04;
             max-width: 980px;
-            margin-bottom: 1.75rem;
+            margin-bottom: 1.5rem;
             text-transform: uppercase;
 
             @media (max-width: 1100px) {
@@ -200,7 +203,7 @@ html {
             }
 
             @media (max-width: 480px) {
-                font-size: 2.5rem;
+                font-size: 2.4rem;
             }
 
             .purple-serif-gradient {
@@ -213,39 +216,45 @@ html {
         }
 
         .hero-sub-description {
-            font-size: 1.05rem;
+            font-size: 1.15rem;
             color: #94a3b8;
             line-height: 1.65;
             max-width: 660px;
-            margin-bottom: 2.25rem;
+            margin-bottom: 1.75rem;
             font-weight: 400;
+
+            @media (max-width: 768px) {
+                font-size: 1rem;
+            }
         }
 
-        /* Cursive Annotation Text on Right Side */
-        .cursive-annotation-side {
-            position: absolute;
-            right: 4.5rem;
-            top: 7.5rem;
-            text-align: left;
-            border-left: 1px solid rgba(255, 255, 255, 0.12);
-            padding-left: 1.25rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.35rem;
+        /* Hero Pillars Row (Plan - Practice - Progress) */
+        .hero-pillars-row {
+            display: inline-flex;
+            align-items: center;
+            gap: 1.25rem;
+            margin-bottom: 2.25rem;
+            padding: 0.45rem 1.5rem;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 9999px;
+            backdrop-filter: blur(8px);
 
-            @media (max-width: 1100px) {
-                display: none;
-            }
-
-            .cursive-word {
-                font-family: 'Caveat', cursive;
-                font-size: 1.65rem;
+            .pillar-badge {
+                font-family: 'Caveat', cursive, sans-serif;
+                font-size: 1.75rem;
                 color: #94a3b8;
-                line-height: 1.2;
+                line-height: 1;
 
                 &.highlighted {
                     color: #c4b5fd;
+                    font-weight: 600;
                 }
+            }
+
+            .pillar-dot {
+                color: rgba(255, 255, 255, 0.25);
+                font-size: 0.9rem;
             }
         }
 
@@ -253,24 +262,59 @@ html {
             background: #ffffff;
             color: #020305;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 800;
-            padding: 0.85rem 2rem;
+            padding: 0.9rem 2.25rem;
             border-radius: 9999px;
             border: none;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
-            margin-bottom: 3.5rem;
+            margin-bottom: 2rem;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
 
             &:hover {
-                transform: translateY(-2px);
+                transform: translateY(-2px) scale(1.02);
                 background: #f8fafc;
                 box-shadow: 0 8px 30px rgba(255, 255, 255, 0.35);
             }
+        }
+
+        .scroll-down-hint {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.4rem;
+            color: #64748b;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            transition: color 0.25s ease;
+
+            &:hover {
+                color: #c4b5fd;
+            }
+
+            svg {
+                animation: heroBounce 2s infinite;
+            }
+        }
+    }
+
+    @keyframes heroBounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(6px);
+        }
+        60% {
+            transform: translateY(3px);
         }
     }
 
@@ -974,10 +1018,20 @@ html {
             color: #475569;
         }
 
-        .cursive-annotation-side .cursive-word {
-            color: #64748b;
-            &.highlighted {
-                color: #7c3aed;
+        .hero-pillars-row {
+            background: rgba(0, 0, 0, 0.04);
+            border-color: rgba(0, 0, 0, 0.12);
+
+            .pillar-badge {
+                color: #64748b;
+
+                &.highlighted {
+                    color: #7c3aed;
+                }
+            }
+
+            .pillar-dot {
+                color: rgba(0, 0, 0, 0.2);
             }
         }
 
@@ -987,6 +1041,14 @@ html {
 
             &:hover {
                 background: #1e293b;
+            }
+        }
+
+        .scroll-down-hint {
+            color: #64748b;
+
+            &:hover {
+                color: #7c3aed;
             }
         }
 

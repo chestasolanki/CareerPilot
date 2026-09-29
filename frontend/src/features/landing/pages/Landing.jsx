@@ -97,8 +97,6 @@ const Landing = () => {
 
       {/* Editorial Hero Headline Section */}
       <section className="editorial-hero-section">
-        
-
         <h1 className="hero-main-headline">
           YOUR CAREER.<br />
           <span className="purple-serif-gradient">YOUR NEXT MOVE.</span>
@@ -108,20 +106,30 @@ const Landing = () => {
           Personalized AI preparation to bridge your skill gaps and land your dream role.
         </p>
 
-        {/* Cursive Annotation */}
-        <div className="cursive-annotation-side">
-          <span className="cursive-word">Plan</span>
-          <span className="cursive-word highlighted">Practice</span>
-          <span className="cursive-word">Progress</span>
+        {/* Plan - Practice - Progress Pillars */}
+        <div className="hero-pillars-row">
+          <span className="pillar-badge">Plan</span>
+          <span className="pillar-dot">•</span>
+          <span className="pillar-badge highlighted">Practice</span>
+          <span className="pillar-dot">•</span>
+          <span className="pillar-badge">Progress</span>
         </div>
 
         <button className="hero-center-action-btn" onClick={handleGetStarted}>
           Get Started →
         </button>
+
+        {/* Scroll down hint */}
+        <div className="scroll-down-hint" onClick={scrollToFeatures}>
+          <span className="scroll-text">Scroll to explore</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 5v14M19 12l-7 7-7-7" />
+          </svg>
+        </div>
       </section>
 
-      {/* 3-Card Showcase Grid (Matching Inspo Image!) */}
-      <section className="hero-cards-showcase-grid">
+      {/* 3-Card Showcase Grid (Shifted down, reveals on scroll) */}
+      <section className="hero-cards-showcase-grid slide-on-scroll">
         {/* Card 01: Analyze Profile */}
         <div className="showcase-card card-01-profile">
           <div className="card-number-line">01 ————</div>
