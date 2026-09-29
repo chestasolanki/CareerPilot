@@ -167,6 +167,10 @@ html {
         justify-content: center;
         text-align: center;
         position: relative;
+        background: 
+            radial-gradient(circle at 50% 50%, rgba(2, 3, 5, 0.55) 0%, rgba(2, 3, 5, 0.88) 80%, #020305 100%),
+            url('/hero-text-bg.jpg') center/cover no-repeat;
+        border-radius: 24px;
 
         @media (max-width: 868px) {
             min-height: auto;
