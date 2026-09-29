@@ -1,18 +1,43 @@
-.button{
+.button {
     border: none;
     outline: none;
-    padding-inline: 1.5rem;
-    padding-block: 0.75rem;
-    border-radius: 1rem;
-    cursor:pointer;
-    transition: all 0.3s ease-in-out;
+    padding: 0.75rem 1.6rem;
+    border-radius: 9999px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    letter-spacing: -0.01em;
 
-    &.primary-button{
-        background-color: #e1034d;
-        color: white;
+    &.primary-button {
+        background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+        color: #080911;
+        box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+
+        &:hover {
+            transform: translateY(-1px);
+            background: #ffffff;
+            box-shadow: 0 6px 24px rgba(255, 255, 255, 0.25);
+        }
+
+        &:active {
+            transform: translateY(0) scale(0.98);
+        }
     }
 
-    &:active{
-        transform: scale(0.9);
+    &.accent-button {
+        background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+        color: #ffffff;
+        box-shadow: 0 4px 20px rgba(139, 92, 246, 0.35);
+
+        &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 28px rgba(139, 92, 246, 0.55);
+        }
     }
 }

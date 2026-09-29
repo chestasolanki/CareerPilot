@@ -68,7 +68,9 @@ const Home = () => {
     <main className='home'>
       {/* App Logo */}
       <nav className="main-nav">
-        <PilotLogo size={42} />
+        <div onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
+          <PilotLogo size={42} />
+        </div>
       </nav>
 
       {/* Header */}

@@ -1,28 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="64" height="64">
   <defs>
     <linearGradient id="bgThemeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#12151e" />
-      <stop offset="100%" stop-color="#090b11" />
+      <stop offset="0%" stop-color="#10121e" />
+      <stop offset="100%" stop-color="#080911" />
     </linearGradient>
     <linearGradient id="bar1Grad" x1="0" y1="100" x2="0" y2="0" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#ff2a70" opacity="0.6" />
-      <stop offset="100%" stop-color="#ff2a70" />
+      <stop offset="0%" stop-color="#8b5cf6" opacity="0.6" />
+      <stop offset="100%" stop-color="#8b5cf6" />
     </linearGradient>
     <linearGradient id="bar2Grad" x1="0" y1="100" x2="0" y2="0" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#ff2a70" />
-      <stop offset="100%" stop-color="#d946ef" />
+      <stop offset="0%" stop-color="#8b5cf6" />
+      <stop offset="100%" stop-color="#6366f1" />
     </linearGradient>
     <linearGradient id="bar3Grad" x1="0" y1="100" x2="0" y2="0" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#d946ef" />
+      <stop offset="0%" stop-color="#6366f1" />
       <stop offset="100%" stop-color="#ffffff" />
     </linearGradient>
     <linearGradient id="arrowGrad" x1="20" y1="80" x2="80" y2="20" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#ff2a70" />
+      <stop offset="0%" stop-color="#8b5cf6" />
       <stop offset="100%" stop-color="#ffffff" />
     </linearGradient>
   </defs>
 
-  <rect width="100" height="100" rx="26" fill="url(#bgThemeGrad)" stroke="rgba(255, 42, 112, 0.5)" stroke-width="2.5" />
+  <rect width="100" height="100" rx="26" fill="url(#bgThemeGrad)" stroke="rgba(139, 92, 246, 0.6)" stroke-width="2.5" />
 
   <!-- Ascending Career Growth Bars -->
   <rect x="20" y="58" width="14" height="26" rx="4" fill="url(#bar1Grad)" />
