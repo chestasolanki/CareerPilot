@@ -12,10 +12,12 @@ const allowedOrigins = [
   "http://127.0.0.1:5173",
   "http://localhost:3000",
   "http://127.0.0.1:3000",
-  "https://careerrpilot.vercel.app"
+  "https://careerrpilot.vercel.app",
+  "https://career-pilot.vercel.app",
+  "https://career-pilot-chestasolanki664-7278s-projects.vercel.app"
 ];
 
-const vercelPreviewPattern = /^https:\/\/careerrpilot-[a-z0-9]+-chestasolanki664-7278s-projects\.vercel\.app$/;
+const vercelPreviewPattern = /^https:\/\/career-?pilot-[a-z0-9]+-chestasolanki664-7278s-projects\.vercel\.app$/;
 
 app.use(cors({
   origin: function (origin, callback) {
