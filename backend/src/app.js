@@ -6,26 +6,18 @@ const app=express()
 app.use(express.json())
 app.use(cookieParser())
 
-// Exact-match origins (local dev + production)
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://127.0.0.1:5173",
-  "http://localhost:3000",
-  "http://127.0.0.1:3000",
-  "https://careerrpilot.vercel.app",
-  "https://career-pilot.vercel.app",
-  "https://career-pilot-chestasolanki664-7278s-projects.vercel.app"
-];
-
-const vercelPreviewPattern = /^https:\/\/career-?pilot-[a-z0-9]+-chestasolanki664-7278s-projects\.vercel\.app$/;
-
+// Allowed origins (local dev + production/preview Vercel deployments)
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin) || vercelPreviewPattern.test(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
+    if (!origin) return callback(null, true);
+    if (
+      origin.startsWith("http://localhost:") ||
+      origin.startsWith("http://127.0.0.1:") ||
+      origin.endsWith(".vercel.app")
+    ) {
+      return callback(null, true);
     }
+    return callback(null, false);
   },
   credentials: true
 }));
