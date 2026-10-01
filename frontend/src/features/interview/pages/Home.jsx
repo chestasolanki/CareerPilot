@@ -40,7 +40,8 @@ const Home = () => {
       }
     } catch (err) {
       console.error("Generate report error:", err)
-      alert(err.message || "Failed to generate report. Please log in and try again.")
+      const errorMsg = err.response?.data?.message || err.message || "Failed to generate report. Please try again."
+      alert(errorMsg)
     }
   }
 
